@@ -731,6 +731,7 @@ cdef class FFTW:
 
     cdef int64_t *_axes
     cdef int64_t *_not_axes
+    # should this be int, or int32_t?
     cdef int *_direction
 
     cdef int64_t _N
