@@ -32,6 +32,8 @@ cdef extern from 'pyfftw_complex.h':
 
 cdef extern from 'fftw3.h':
     
+    ctypedef int fftw_r2r_kind
+
     # Double precision plans
     ctypedef struct fftw_plan_struct:
         pass
@@ -121,6 +123,27 @@ cdef extern from 'fftw3.h':
             clongdouble *_in, long double *_out,
             unsigned flags)
 
+    # Double precision real planner
+    fftw_plan fftw_plan_guru_r2r(
+            int rank, fftw_iodim *dims,
+            int howmany_rank, fftw_iodim *howmany_dims,
+            double *_in, double *_out,
+            fftw_r2r_kind *kind, unsigned flags)
+
+    # Single precision real planner
+    fftwf_plan fftwf_plan_guru_r2r(
+            int rank, fftw_iodim *dims,
+            int howmany_rank, fftw_iodim *howmany_dims,
+            float *_in, float *_out,
+            fftw_r2r_kind *kind, unsigned flags)
+
+    # Single precision real planner
+    fftwl_plan fftwl_plan_guru_r2r(
+            int rank, fftw_iodim *dims,
+            int howmany_rank, fftw_iodim *howmany_dims,
+            long double *_in, long double *_out,
+            fftw_r2r_kind *kind, unsigned flags)
+
     # Double precision complex new array execute
     void fftw_execute_dft(fftw_plan,
           cdouble *_in, cdouble *_out) nogil
@@ -156,6 +179,18 @@ cdef extern from 'fftw3.h':
     # Long double precision complex to real new array execute    
     void fftwl_execute_dft_c2r(fftwl_plan,
           clongdouble *_in, long double *_out) nogil
+
+    # Double precision real new array execute
+    void fftw_execute_r2r(fftw_plan,
+          double *_in, double *_out) nogil
+
+    # Single precision real new array execute
+    void fftwf_execute_r2r(fftwf_plan,
+          float *_in, float *_out) nogil
+
+    # Long double precision real new array execute
+    void fftwl_execute_r2r(fftwl_plan,
+          long double *_in, long double *_out) nogil
 
     # Double precision plan destroyer
     void fftw_destroy_plan(fftw_plan)
@@ -227,7 +262,7 @@ ctypedef void * (*fftw_generic_plan_guru)(
         int rank, fftw_iodim *dims,
         int howmany_rank, fftw_iodim *howmany_dims,
         void *_in, void *_out,
-        int sign, int flags)
+        int* sign, int flags)
 
 ctypedef void (*fftw_generic_execute)(void *_plan, void *_in, void *_out) nogil
 
@@ -247,6 +282,15 @@ ctypedef bint (*validator)(np.ndarray input_array,
 cdef enum:
     FFTW_FORWARD = -1
     FFTW_BACKWARD = 1
+    # from fftw3.f 3.3.3; may not be valid for different versions of FFTW.
+    FFTW_REDFT00  = 3
+    FFTW_REDFT01  = 4
+    FFTW_REDFT10  = 5
+    FFTW_REDFT11  = 6
+    FFTW_RODFT00  = 7
+    FFTW_RODFT01  = 8
+    FFTW_RODFT10  = 9
+    FFTW_RODFT11  = 10
 
 # Documented flags
 cdef enum:
