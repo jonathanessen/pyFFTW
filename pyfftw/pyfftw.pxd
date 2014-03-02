@@ -147,7 +147,7 @@ cdef extern from 'fftw3.h':
             float *_in, float *_out,
             fftw_r2r_kind *kind, unsigned flags)
 
-    # Single precision real planner
+    # Long double precision real planner
     fftwl_plan fftwl_plan_guru_r2r(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
