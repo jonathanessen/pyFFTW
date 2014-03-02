@@ -24,6 +24,10 @@ ctypedef struct _fftw_iodim:
     int _is
     int _os
 
+ctypedef union directions_union:
+    int *dft
+    fftw_r2r_kind *rfts
+
 cdef extern from 'pyfftw_complex.h':
     
     ctypedef float cfloat[2]
@@ -32,7 +36,13 @@ cdef extern from 'pyfftw_complex.h':
 
 cdef extern from 'fftw3.h':
     
-    ctypedef int fftw_r2r_kind
+
+    # Integer flag for which real-to-real transform to use. This should be
+    # defined with a type suffix on fftw (e.g fftwf). However, the header
+    # definition just defines them all in terms of the same enum, so they should
+    # be identical anyway.
+    ctypedef enum fftw_r2r_kind:
+        pass
 
     # Double precision plans
     ctypedef struct fftw_plan_struct:
@@ -262,7 +272,7 @@ ctypedef void * (*fftw_generic_plan_guru)(
         int rank, fftw_iodim *dims,
         int howmany_rank, fftw_iodim *howmany_dims,
         void *_in, void *_out,
-        int* sign, int flags)
+        directions_union directions, int flags)
 
 ctypedef void (*fftw_generic_execute)(void *_plan, void *_in, void *_out) nogil
 
