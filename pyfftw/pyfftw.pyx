@@ -80,43 +80,43 @@ cdef void* _fftw_plan_guru_dft(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftw_plan_guru_dft(rank, dims,
             howmany_rank, howmany_dims,
             <cdouble *>_in, <cdouble *>_out,
-            direction.dft[0], flags)
+            direction[0], flags)
 
 # Complex single precision
 cdef void* _fftwf_plan_guru_dft(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftwf_plan_guru_dft(rank, dims,
             howmany_rank, howmany_dims,
             <cfloat *>_in, <cfloat *>_out,
-            direction.dft[0], flags)
+            direction[0], flags)
 
 # Complex long double precision
 cdef void* _fftwl_plan_guru_dft(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftwl_plan_guru_dft(rank, dims,
             howmany_rank, howmany_dims,
             <clongdouble *>_in, <clongdouble *>_out,
-            direction.dft[0], flags)
+            direction[0], flags)
 
 # real to complex double precision
 cdef void* _fftw_plan_guru_dft_r2c(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftw_plan_guru_dft_r2c(rank, dims,
             howmany_rank, howmany_dims,
@@ -128,7 +128,7 @@ cdef void* _fftwf_plan_guru_dft_r2c(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftwf_plan_guru_dft_r2c(rank, dims,
             howmany_rank, howmany_dims,
@@ -140,7 +140,7 @@ cdef void* _fftwl_plan_guru_dft_r2c(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftwl_plan_guru_dft_r2c(rank, dims,
             howmany_rank, howmany_dims,
@@ -152,7 +152,7 @@ cdef void* _fftw_plan_guru_dft_c2r(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftw_plan_guru_dft_c2r(rank, dims,
             howmany_rank, howmany_dims,
@@ -164,7 +164,7 @@ cdef void* _fftwf_plan_guru_dft_c2r(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftwf_plan_guru_dft_c2r(rank, dims,
             howmany_rank, howmany_dims,
@@ -176,7 +176,7 @@ cdef void* _fftwl_plan_guru_dft_c2r(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftwl_plan_guru_dft_c2r(rank, dims,
             howmany_rank, howmany_dims,
@@ -188,36 +188,36 @@ cdef void* _fftw_plan_guru_r2r(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftw_plan_guru_r2r(rank, dims,
             howmany_rank, howmany_dims,
             <double *>_in, <double *>_out,
-            direction.rfts, flags)
+            direction, flags)
 
 # real to real single precision
 cdef void* _fftwf_plan_guru_r2r(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftwf_plan_guru_r2r(rank, dims,
             howmany_rank, howmany_dims,
             <float *>_in, <float *>_out,
-            direction.rfts, flags)
+            direction, flags)
 
 # real to real long double precision
 cdef void* _fftwl_plan_guru_r2r(
             int rank, fftw_iodim *dims,
             int howmany_rank, fftw_iodim *howmany_dims,
             void *_in, void *_out,
-            directions_union direction, int flags):
+            int *direction, int flags):
 
     return <void *>fftwl_plan_guru_r2r(rank, dims,
             howmany_rank, howmany_dims,
             <long double *>_in, <long double *>_out,
-            direction.rfts, flags)
+            direction, flags)
 
 #    Executors
 #    =========
@@ -731,7 +731,7 @@ cdef class FFTW:
 
     cdef int64_t *_axes
     cdef int64_t *_not_axes
-    cdef directions_union _direction
+    cdef int *_direction
 
     cdef int64_t _N
     def _get_N(self):
@@ -863,15 +863,15 @@ cdef class FFTW:
         '''
         cdef int i
         transform_directions = list()
-        if self._direction.dft[0] in [FFTW_FORWARD, FFTW_BACKWARD]:
+        if self._direction[0] in [FFTW_FORWARD, FFTW_BACKWARD]:
             # It would be nice to return a length-one list here (so that the
             # return type is always [str]). This is an annoying type difference,
             # but is backwards compatible.
-            return directions_lookup[self._direction.dft[0]]
+            return directions_lookup[self._direction[0]]
         else:
             for i in range(self._rank):
                 transform_directions.append(directions_lookup[
-                        self._direction.rfts[i]])
+                        self._direction[i]])
         return transform_directions
 
     direction = property(_get_direction)
@@ -907,7 +907,7 @@ cdef class FFTW:
 
         self._axes = NULL
         self._not_axes = NULL
-        self._direction.rfts = NULL
+        self._direction = NULL
 
         flags = list(flags)
 
@@ -1017,15 +1017,12 @@ cdef class FFTW:
                         'The direction is not valid for the scheme. '
                         'Try setting it explicitly if it is not already.')
 
-        # Wastes a few bytes, but sizeof(fftw_r2r_kind) could be 1 byte
-        # depending on the platform (see C99 standard 6.7.2.2).
-        self._direction.rfts = <fftw_r2r_kind *>malloc(
-                len(axes)*sizeof(fftw_r2r_kind)*sizeof(int))
+        self._direction = <int *>malloc(len(axes)*sizeof(int))
 
         real_transforms = True
         cdef int i
         if given_directions[0] in ['FFTW_FORWARD', 'FFTW_BACKWARD']:
-            self._direction.dft[0] = directions[given_directions[0]]
+            self._direction[0] = directions[given_directions[0]]
             real_transforms = False
         else:
             if len(axes) != len(given_directions):
@@ -1038,7 +1035,7 @@ cdef class FFTW:
                             'assigned with \'FFTW_FORWARD\' or '
                             '\'FFTW_BACKWARD\'.')
                 else:
-                    self._direction.rfts[i] = directions[given_directions[i]]
+                    self._direction[i] = directions[given_directions[i]]
 
         self._input_shape = input_array.shape
         self._output_shape = output_array.shape
@@ -1082,14 +1079,14 @@ cdef class FFTW:
                     'axes over which the FFT is to be taken')
 
             if real_transforms:
-                if self._direction.rfts[n] == FFTW_RODFT00:
+                if self._direction[n] == FFTW_RODFT00:
                     total_N *= 2*(self._input_shape[self._axes[n]] + 1)
-                elif self._direction.rfts[n] == FFTW_REDFT00:
+                elif self._direction[n] == FFTW_REDFT00:
                     total_N *= 2*(self._input_shape[self._axes[n]] - 1)
                 else:
                     total_N *= 2*self._input_shape[self._axes[n]]
             else:
-                if self._direction.dft[0] == FFTW_FORWARD:
+                if self._direction[0] == FFTW_FORWARD:
                     total_N *= self._input_shape[self._axes[n]]
                 else:
                     total_N *= self._output_shape[self._axes[n]]
@@ -1429,8 +1426,8 @@ cdef class FFTW:
         if not self._howmany_dims == NULL:
             free(self._howmany_dims)
 
-        if not self._direction.rfts == NULL:
-            free(self._direction.rfts)
+        if not self._direction == NULL:
+            free(self._direction)
 
     def __call__(self, input_array=None, output_array=None,
             normalise_idft=True):
@@ -1534,7 +1531,7 @@ cdef class FFTW:
 
         self.execute()
 
-        if self._direction.dft[0] == FFTW_BACKWARD and normalise_idft:
+        if self._direction[0] == FFTW_BACKWARD and normalise_idft:
             self._output_array *= self._normalisation_scaling
 
         return self._output_array
