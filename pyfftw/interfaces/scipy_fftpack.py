@@ -43,17 +43,18 @@ a 2D `shape` argument will return without exception whereas
 '''
 
 from . import numpy_fft
+from ._utils import _Xfftn
 import numpy
 
 # Complete the namespace (these are not actually used in this module)
-from scipy.fftpack import (dct, idct, diff, tilbert, itilbert, 
         hilbert, ihilbert, cs_diff, sc_diff, ss_diff, cc_diff, 
         shift, fftshift, ifftshift, fftfreq, rfftfreq, 
+from scipy.fftpack import (idst, idct, diff, tilbert, itilbert,
         convolve, _fftpack)
 
 __all__ = ['fft','ifft','fftn','ifftn','rfft','irfft', 'fft2','ifft2', 
         'diff', 'tilbert','itilbert','hilbert','ihilbert', 'sc_diff',
-        'cs_diff','cc_diff','ss_diff', 'shift', 'rfftfreq']
+           'cs_diff','cc_diff','ss_diff', 'shift', 'rfftfreq', 'dct', 'dst']
 
 def fft(x, n=None, axis=-1, overwrite_x=False, 
         planner_effort='FFTW_MEASURE', threads=1,
@@ -273,3 +274,90 @@ def irfft(x, n=None, axis=-1, overwrite_x=False,
     return numpy_fft.irfft(complex_input, n, axis, overwrite_x, 
             planner_effort, threads, auto_align_input, auto_contiguous)
 
+
+def dct(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
+        planner_effort='FFTW_MEASURE', threads=1,
+        auto_align_input=True, auto_contiguous=True):
+    '''Perform a 1D discrete cosine transform.
+
+    The first three arguments are as per :func:`scipy.fftpack.dct`;
+    the rest of the arguments are documented
+    in the :ref:`additional arguments docs<interfaces_additional_args>`.
+    '''
+    if not numpy.isrealobj(x):
+        raise TypeError("1st argument must be real sequence")
+
+    x = numpy.asanyarray(x)
+    if n is None:
+        n = x.shape[axis]
+    else:
+        raise NotImplementedError("Padding/truncating not yet implemented")
+
+    if type == 1 and norm is not None:
+        raise NotImplementedError(
+            "Orthonormalization not yet supported for DCT-I")
+
+    type_flag_lookup = {
+        1: 'FFTW_REDFT00',
+        2: 'FFTW_REDFT10',
+        3: 'FFTW_REDFT01',
+        # 4: 'FFTW_REDFT11',
+    }
+    try:
+        type_flag = type_flag_lookup[type]
+    except KeyError:
+        raise ValueError("Type %d not understood" % type)
+
+    calling_func = 'dct'
+
+    result_unnormalized = _Xfftn(x, n, axis, overwrite_x, planner_effort,
+                                 threads, auto_align_input, auto_contiguous,
+                                 calling_func, real_direction_flag=type_flag)
+    if norm is None:
+        return result_unnormalized
+    else:
+        raise NotImplementedError # TODO SciPy has this: implement it.
+
+
+def dst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
+        planner_effort='FFTW_MEASURE', threads=1,
+        auto_align_input=True, auto_contiguous=True):
+    '''Perform a 1D discrete cosine transform.
+
+    The first three arguments are as per :func:`scipy.fftpack.dct`;
+    the rest of the arguments are documented
+    in the :ref:`additional arguments docs<interfaces_additional_args>`.
+    '''
+    if not numpy.isrealobj(x):
+        raise TypeError("1st argument must be real sequence")
+
+    x = numpy.asanyarray(x)
+    if n is None:
+        n = x.shape[axis]
+    else:
+        raise NotImplementedError("Padding/truncating not yet implemented")
+
+    if type == 1 and norm is not None:
+        raise NotImplementedError(
+            "Orthonormalization not yet supported for DST-I")
+
+    type_flag_lookup = {
+        1: 'FFTW_RODFT00',
+        2: 'FFTW_RODFT10',
+        3: 'FFTW_RODFT01',
+        # 4: 'FFTW_RODFT11',
+    }
+    try:
+        type_flag = type_flag_lookup[type]
+    except KeyError:
+        raise ValueError("Type %d not understood" % type)
+
+    calling_func = 'dst'
+
+    result_unnormalized = _Xfftn(x, n, axis, overwrite_x, planner_effort,
+                                 threads, auto_align_input, auto_contiguous,
+                                 calling_func, real_direction_flag=type_flag)
+    if norm is None:
+        return result_unnormalized
+    else:
+        raise NotImplementedError # TODO SciPy has this: implement it.
