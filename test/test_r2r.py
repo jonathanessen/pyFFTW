@@ -7,6 +7,7 @@
 from __future__ import division
 import itertools as it
 import random as rand
+import unittest
 import numpy as np
 import pyfftw
 
@@ -64,6 +65,23 @@ nodes_lookup = {
     'FFTW_REDFT11': lambda n: (np.arange(n) + 0.5)/n,
 }
 
+class TestRandomRealTransforms(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_exact_data(self):
+        for _ in range(50):
+            testcase = random_testcase()
+            testcase.test_against_exact_data()
+
+    def test_random_data(self):
+        for _ in range(50):
+            testcase = random_testcase()
+            testcase.test_against_random_data()
+
 def test_lookups():
     """Test that the lookup tables correctly pair node choices and
     function choices for using the DCT/DST as interpolators.
@@ -84,14 +102,6 @@ def test_lookups():
             assert abs(output[j] - n + 1) < tol
         else:
             assert abs(output[j] - n) < tol
-
-def run():
-    test_lookups()
-    for i in range(50):
-        testcase = random_testcase()
-        for j in range(3):
-            testcase.test_against_random_data()
-            testcase.test_against_exact_data()
 
 class TestRealTransform(object):
     def __init__(self, directions, dims, axes=None, noncontiguous=True):
@@ -276,3 +286,6 @@ def empty_noncontiguous(shape):
         raise ValueError("The shape of the noncontiguous array is incorrect."
                          " This is a bug.")
     return child
+
+if __name__ == '__main__':
+    unittest.main()
