@@ -42,19 +42,21 @@ a 2D `shape` argument will return without exception whereas
 :func:`pyfftw.interfaces.scipy_fftpack.fft2` will raise a `ValueError`.
 '''
 
+import itertools as it
 from . import numpy_fft
 from ._utils import _Xfftn
 import numpy
 
 # Complete the namespace (these are not actually used in this module)
-        hilbert, ihilbert, cs_diff, sc_diff, ss_diff, cc_diff, 
-        shift, fftshift, ifftshift, fftfreq, rfftfreq, 
-from scipy.fftpack import (idst, idct, diff, tilbert, itilbert,
+from scipy.fftpack import (diff, tilbert, itilbert,
+        hilbert, ihilbert, cs_diff, sc_diff, ss_diff, cc_diff,
+        shift, fftshift, ifftshift, fftfreq, rfftfreq,
         convolve, _fftpack)
 
-__all__ = ['fft','ifft','fftn','ifftn','rfft','irfft', 'fft2','ifft2', 
-        'diff', 'tilbert','itilbert','hilbert','ihilbert', 'sc_diff',
-           'cs_diff','cc_diff','ss_diff', 'shift', 'rfftfreq', 'dct', 'dst']
+__all__ = ['fft','ifft','fftn','ifftn','rfft','irfft', 'fft2','ifft2',
+           'diff', 'tilbert','itilbert','hilbert','ihilbert', 'sc_diff',
+           'cs_diff','cc_diff','ss_diff', 'shift', 'rfftfreq', 'dct', 'dst',
+           'idct', 'idst']
 
 def fft(x, n=None, axis=-1, overwrite_x=False, 
         planner_effort='FFTW_MEASURE', threads=1,
@@ -293,15 +295,19 @@ def dct(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
     else:
         raise NotImplementedError("Padding/truncating not yet implemented")
 
-    if type == 1 and norm is not None:
-        raise NotImplementedError(
-            "Orthonormalization not yet supported for DCT-I")
+    if type == 3 and norm == 'ortho':
+        x = numpy.copy(x)
+        sp = list(it.repeat(Ellipsis, len(x.shape)))
+        sp[axis] = 0
+        x[sp] /= numpy.sqrt(x.shape[axis])
+        sp[axis] = slice(1, None, None)
+        x[sp] /= numpy.sqrt(2*x.shape[axis])
 
     type_flag_lookup = {
         1: 'FFTW_REDFT00',
         2: 'FFTW_REDFT10',
         3: 'FFTW_REDFT01',
-        # 4: 'FFTW_REDFT11',
+        4: 'FFTW_REDFT11',
     }
     try:
         type_flag = type_flag_lookup[type]
@@ -316,8 +322,42 @@ def dct(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
     if norm is None:
         return result_unnormalized
     else:
-        raise NotImplementedError # TODO SciPy has this: implement it.
+        sp = list(it.repeat(Ellipsis, len(x.shape)))
+        if type == 1:
+            result_unnormalized /= numpy.sqrt(2*(x.shape[axis] - 1))
+            result = result_unnormalized
+        if type == 2:
+            sp[axis] = 0
+            result_unnormalized[sp] /= numpy.sqrt(4*x.shape[axis])
+            sp[axis] = slice(1, None, None)
+            result_unnormalized[sp] /= numpy.sqrt(2*x.shape[axis])
+            result = result_unnormalized
+        elif type == 3:
+            # normalization implemented as data preprocessing
+            result = result_unnormalized
+        elif type == 4:
+            result_unnormalized /= numpy.sqrt(2*x.shape[axis])
+            result = result_unnormalized
+        return result
 
+def idct(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
+        planner_effort='FFTW_MEASURE', threads=1,
+        auto_align_input=True, auto_contiguous=True):
+    '''Perform an inverse 1D discrete cosine transform.
+
+    The first three arguments are as per :func:`scipy.fftpack.idct`;
+    the rest of the arguments are documented
+    in the :ref:`additional arguments docs<interfaces_additional_args>`.
+    '''
+    try:
+        inverse_type = {1: 1, 2: 3, 3: 2}[type]
+    except KeyError:
+        raise ValueError("Type %d not understood" % type)
+
+    return dct(x, n=n, axis=axis, norm=norm, overwrite_x=overwrite_x,
+               type=inverse_type, planner_effort=planner_effort,
+               threads=threads, auto_align_input=auto_align_input,
+               auto_contiguous=auto_contiguous)
 
 def dst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
         planner_effort='FFTW_MEASURE', threads=1,
@@ -337,15 +377,11 @@ def dst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
     else:
         raise NotImplementedError("Padding/truncating not yet implemented")
 
-    if type == 1 and norm is not None:
-        raise NotImplementedError(
-            "Orthonormalization not yet supported for DST-I")
-
     type_flag_lookup = {
         1: 'FFTW_RODFT00',
         2: 'FFTW_RODFT10',
         3: 'FFTW_RODFT01',
-        # 4: 'FFTW_RODFT11',
+        4: 'FFTW_RODFT11',
     }
     try:
         type_flag = type_flag_lookup[type]
@@ -360,4 +396,29 @@ def dst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
     if norm is None:
         return result_unnormalized
     else:
-        raise NotImplementedError # TODO SciPy has this: implement it.
+        if type == 1:
+            result_unnormalized /= numpy.sqrt(2*(x.shape[axis] + 1))
+            result = result_unnormalized
+        else:
+            result_unnormalized /= numpy.sqrt(2*x.shape[axis])
+            result = result_unnormalized
+        return result
+
+def idst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
+        planner_effort='FFTW_MEASURE', threads=1,
+        auto_align_input=True, auto_contiguous=True):
+    '''Perform an inverse 1D discrete sine transform.
+
+    The first three arguments are as per :func:`scipy.fftpack.idst`;
+    the rest of the arguments are documented
+    in the :ref:`additional arguments docs<interfaces_additional_args>`.
+    '''
+    try:
+        inverse_type = {1: 1, 2: 3, 3:2}[type]
+    except KeyError:
+        raise ValueError("Type %d not understood" % type)
+
+    return dst(x, n=n, axis=axis, norm=norm, overwrite_x=overwrite_x,
+               type=inverse_type, planner_effort=planner_effort,
+               threads=threads, auto_align_input=auto_align_input,
+               auto_contiguous=auto_contiguous)
