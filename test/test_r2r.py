@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Copyright 2014 David Wells
+#
+# David Wells
+# drwells <at> vt.edu
 from __future__ import division
 import itertools as it
 import random as rand

@@ -1,7 +1,11 @@
 # Copyright 2012 Knowledge Economy Developments Ltd
-# 
+# Copyright 2014 David Wells
+#
 # Henry Gomersall
 # heng@kedevelopments.co.uk
+#
+# David Wells
+# drwells <at> vt.edu
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
