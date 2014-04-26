@@ -299,6 +299,10 @@ def dct(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
     else:
         raise NotImplementedError("Padding/truncating not yet implemented")
 
+    if norm:
+        if norm != 'ortho':
+            raise ValueError("Unknown normalize mode %s" % norm)
+
     if type == 3 and norm == 'ortho':
         x = numpy.copy(x)
         sp = list(it.repeat(Ellipsis, len(x.shape)))
@@ -323,7 +327,7 @@ def dct(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
     result_unnormalized = _Xfftn(x, n, axis, overwrite_x, planner_effort,
                                  threads, auto_align_input, auto_contiguous,
                                  calling_func, real_direction_flag=type_flag)
-    if norm is None:
+    if not norm:
         return result_unnormalized
     else:
         sp = list(it.repeat(Ellipsis, len(x.shape)))
@@ -381,6 +385,10 @@ def dst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
     else:
         raise NotImplementedError("Padding/truncating not yet implemented")
 
+    if norm:
+        if norm != 'ortho':
+            raise ValueError("Unknown normalize mode %s" % norm)
+
     type_flag_lookup = {
         1: 'FFTW_RODFT00',
         2: 'FFTW_RODFT10',
@@ -397,7 +405,7 @@ def dst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
     result_unnormalized = _Xfftn(x, n, axis, overwrite_x, planner_effort,
                                  threads, auto_align_input, auto_contiguous,
                                  calling_func, real_direction_flag=type_flag)
-    if norm is None:
+    if not norm:
         return result_unnormalized
     else:
         if type == 1:
