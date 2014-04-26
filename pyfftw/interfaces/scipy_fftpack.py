@@ -330,11 +330,11 @@ def dct(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
     if not norm:
         return result_unnormalized
     else:
-        sp = list(it.repeat(Ellipsis, len(x.shape)))
         if type == 1:
             result_unnormalized /= numpy.sqrt(2*(x.shape[axis] - 1))
             result = result_unnormalized
         if type == 2:
+            sp = list(it.repeat(Ellipsis, len(x.shape)))
             sp[axis] = 0
             result_unnormalized[sp] /= numpy.sqrt(4*x.shape[axis])
             sp[axis] = slice(1, None, None)
