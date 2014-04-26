@@ -370,9 +370,9 @@ def idct(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
 def dst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
         planner_effort='FFTW_MEASURE', threads=1,
         auto_align_input=True, auto_contiguous=True):
-    '''Perform a 1D discrete cosine transform.
+    '''Perform a 1D discrete sine transform.
 
-    The first three arguments are as per :func:`scipy.fftpack.dct`;
+    The first three arguments are as per :func:`scipy.fftpack.dst`;
     the rest of the arguments are documented
     in the :ref:`additional arguments docs<interfaces_additional_args>`.
     '''
