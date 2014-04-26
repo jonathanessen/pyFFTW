@@ -389,6 +389,14 @@ def dst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
         if norm != 'ortho':
             raise ValueError("Unknown normalize mode %s" % norm)
 
+    if type == 3 and norm == 'ortho':
+        x = numpy.copy(x)
+        sp = list(it.repeat(Ellipsis, len(x.shape)))
+        sp[axis] = 0
+        x[sp] /= numpy.sqrt(x.shape[axis])
+        sp[axis] = slice(1, None, None)
+        x[sp] /= numpy.sqrt(2*x.shape[axis])
+
     type_flag_lookup = {
         1: 'FFTW_RODFT00',
         2: 'FFTW_RODFT10',
