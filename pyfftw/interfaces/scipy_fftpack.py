@@ -419,7 +419,17 @@ def dst(x, n=None, axis=-1, norm=None, overwrite_x=False, type=2,
         if type == 1:
             result_unnormalized /= numpy.sqrt(2*(x.shape[axis] + 1))
             result = result_unnormalized
-        else:
+        elif type == 2:
+            sp = list(it.repeat(Ellipsis, len(x.shape)))
+            sp[axis] = 0
+            result_unnormalized[sp] *= 1.0/(2*numpy.sqrt(x.shape[axis]))
+            sp = list(it.repeat(Ellipsis, len(x.shape)))
+            sp[axis] = slice(1, None, None)
+            result_unnormalized[sp] *= 1.0/numpy.sqrt(2*x.shape[axis])
+            result = result_unnormalized
+        elif type == 3:
+            result = result_unnormalized
+        elif type == 4:
             result_unnormalized /= numpy.sqrt(2*x.shape[axis])
             result = result_unnormalized
         return result
