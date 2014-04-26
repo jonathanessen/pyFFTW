@@ -66,21 +66,20 @@ nodes_lookup = {
 }
 
 class TestRandomRealTransforms(unittest.TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
+    def test_normalisation(self):
+        for _ in range(50):
+            testcase = random_testcase()
+            self.assertTrue(testcase.test_normalisation())
 
     def test_exact_data(self):
         for _ in range(50):
             testcase = random_testcase()
-            testcase.test_against_exact_data()
+            self.assertTrue(testcase.test_against_exact_data())
 
     def test_random_data(self):
         for _ in range(50):
             testcase = random_testcase()
-            testcase.test_against_random_data()
+            self.assertTrue(testcase.test_against_random_data())
 
 def test_lookups():
     """Test that the lookup tables correctly pair node choices and
@@ -149,8 +148,8 @@ class TestRealTransform(object):
         self.inverse_plan = pyfftw.FFTW(self._input_array, self._output_array,
             axes=self.axes, direction=self.inverse_directions)
 
-    def test_normalization(self):
-        assert self._normalisation_factor == float(self.plan._get_N())
+    def test_normalisation(self):
+        return self._normalisation_factor == float(self.plan._get_N())
 
     def test_against_random_data(self):
         data = np.random.rand(*self.dims)
@@ -161,8 +160,7 @@ class TestRealTransform(object):
 
         data *= self._normalisation_factor
         err = np.mean(np.abs(data - self._output_array))/self._normalisation_factor
-        if err > 10e-8:
-            raise ValueError("mean error is {}".format(error))
+        return err < 10e-8
 
     def test_against_exact_data(self):
         points = grid(self.dims, self.axes, self.directions)
@@ -216,8 +214,7 @@ class TestRealTransform(object):
 
         error = np.mean(np.abs(self._output_array/normalisation
                               - exact_coefficients))
-        if error > 10e-8:
-            raise ValueError("average error is {}".format(error))
+        return error < 1e-8
 
 def random_testcase():
     ndims = rand.randint(1, 5)
