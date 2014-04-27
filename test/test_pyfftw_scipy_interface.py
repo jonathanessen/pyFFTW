@@ -40,9 +40,9 @@ All the tests here just check that the call is made correctly.
 funcs = ('fft','ifft', 'fft2', 'ifft2', 'fftn', 'ifftn', 
            'rfft', 'irfft')
 
-        'ihilbert', 'cs_diff', 'sc_diff', 'ss_diff', 'cc_diff', 'shift', 
-        'fftshift', 'ifftshift', 'fftfreq', 'rfftfreq', 'convolve', 
 acquired_names = ('diff', 'tilbert', 'itilbert', 'hilbert',
+        'ihilbert', 'cs_diff', 'sc_diff', 'ss_diff', 'cc_diff', 'shift',
+        'fftshift', 'ifftshift', 'fftfreq', 'rfftfreq', 'convolve',
         '_fftpack')
 
 def make_complex_data(shape, dtype):
