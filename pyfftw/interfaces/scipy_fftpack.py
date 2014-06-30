@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2013 Knowledge Economy Developments Ltd
+# Copyright 2014 Knowledge Economy Developments Ltd
 # Copyright 2014 David Wells
 #
 # Henry Gomersall
@@ -9,18 +9,34 @@
 # David Wells
 # drwells <at> vt.edu
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# All rights reserved.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# * Neither the name of the copyright holder nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
 
 '''
 This module implements those functions that replace aspects of the
@@ -32,7 +48,7 @@ The exceptions raised by each of these functions are mostly as per their
 equivalents in :mod:`scipy.fftpack`, though there are some corner cases in
 which this may not be true.
 
-It is notable that unlike :mod:`scipy.fftpack`, these functions will 
+It is notable that unlike :mod:`scipy.fftpack`, these functions will
 generally return an output array with the same precision as the input
 array, and the transform that is chosen is chosen based on the precision
 of the input array. That is, if the input array is 32-bit floating point,
@@ -42,7 +58,7 @@ precision.
 
 Some corner (mis)usages of :mod:`scipy.fftpack` may not transfer neatly.
 For example, using :func:`scipy.fftpack.fft2` with a non 1D array and
-a 2D `shape` argument will return without exception whereas 
+a 2D `shape` argument will return without exception whereas
 :func:`pyfftw.interfaces.scipy_fftpack.fft2` will raise a `ValueError`.
 '''
 
@@ -62,13 +78,13 @@ __all__ = ['fft','ifft','fftn','ifftn','rfft','irfft', 'fft2','ifft2',
            'cs_diff','cc_diff','ss_diff', 'shift', 'rfftfreq', 'dct', 'dst',
            'idct', 'idst']
 
-def fft(x, n=None, axis=-1, overwrite_x=False, 
+def fft(x, n=None, axis=-1, overwrite_x=False,
         planner_effort='FFTW_MEASURE', threads=1,
         auto_align_input=True, auto_contiguous=True):
     '''Perform a 1D FFT.
-    
-    The first three arguments are as per :func:`scipy.fftpack.fft`; 
-    the rest of the arguments are documented 
+
+    The first three arguments are as per :func:`scipy.fftpack.fft`;
+    the rest of the arguments are documented
     in the :ref:`additional argument docs<interfaces_additional_args>`.
     '''
     return numpy_fft.fft(x, n, axis, overwrite_x, planner_effort,
@@ -78,9 +94,9 @@ def ifft(x, n=None, axis=-1, overwrite_x=False,
         planner_effort='FFTW_MEASURE', threads=1,
         auto_align_input=True, auto_contiguous=True):
     '''Perform a 1D inverse FFT.
-    
-    The first three arguments are as per :func:`scipy.fftpack.ifft`; 
-    the rest of the arguments are documented 
+
+    The first three arguments are as per :func:`scipy.fftpack.ifft`;
+    the rest of the arguments are documented
     in the :ref:`additional argument docs<interfaces_additional_args>`.
     '''
 
@@ -92,9 +108,9 @@ def fft2(x, shape=None, axes=(-2,-1), overwrite_x=False,
         planner_effort='FFTW_MEASURE', threads=1,
         auto_align_input=True, auto_contiguous=True):
     '''Perform a 2D FFT.
-    
-    The first three arguments are as per :func:`scipy.fftpack.fft2`; 
-    the rest of the arguments are documented 
+
+    The first three arguments are as per :func:`scipy.fftpack.fft2`;
+    the rest of the arguments are documented
     in the :ref:`additional argument docs<interfaces_additional_args>`.
     '''
 
@@ -106,8 +122,8 @@ def ifft2(x, shape=None, axes=(-2,-1), overwrite_x=False,
         planner_effort='FFTW_MEASURE', threads=1,
         auto_align_input=True, auto_contiguous=True):
     '''Perform a 2D inverse FFT.
-    
-    The first three arguments are as per :func:`scipy.fftpack.ifft2`; 
+
+    The first three arguments are as per :func:`scipy.fftpack.ifft2`;
     the rest of the arguments are documented in the
     :ref:`additional argument docs <interfaces_additional_args>`.
     '''
@@ -120,9 +136,9 @@ def fftn(x, shape=None, axes=None, overwrite_x=False,
         planner_effort='FFTW_MEASURE', threads=1,
         auto_align_input=True, auto_contiguous=True):
     '''Perform an n-D FFT.
-    
-    The first three arguments are as per :func:`scipy.fftpack.fftn`; 
-    the rest of the arguments are documented 
+
+    The first three arguments are as per :func:`scipy.fftpack.fftn`;
+    the rest of the arguments are documented
     in the :ref:`additional argument docs<interfaces_additional_args>`.
     '''
 
@@ -144,9 +160,9 @@ def ifftn(x, shape=None, axes=None, overwrite_x=False,
         planner_effort='FFTW_MEASURE', threads=1,
         auto_align_input=True, auto_contiguous=True):
     '''Perform an n-D inverse FFT.
-    
-    The first three arguments are as per :func:`scipy.fftpack.ifftn`; 
-    the rest of the arguments are documented 
+
+    The first three arguments are as per :func:`scipy.fftpack.ifftn`;
+    the rest of the arguments are documented
     in the :ref:`additional argument docs<interfaces_additional_args>`.
     '''
 
@@ -164,7 +180,7 @@ def ifftn(x, shape=None, axes=None, overwrite_x=False,
             threads, auto_align_input, auto_contiguous)
 
 def _complex_to_rfft_output(complex_output, output_shape, axis):
-    '''Convert the complex output from pyfftw to the real output expected 
+    '''Convert the complex output from pyfftw to the real output expected
     from :func:`scipy.fftpack.rfft`.
     '''
 
@@ -237,9 +253,9 @@ def rfft(x, n=None, axis=-1, overwrite_x=False,
         planner_effort='FFTW_MEASURE', threads=1,
         auto_align_input=True, auto_contiguous=True):
     '''Perform a 1D real FFT.
-    
-    The first three arguments are as per :func:`scipy.fftpack.rfft`; 
-    the rest of the arguments are documented 
+
+    The first three arguments are as per :func:`scipy.fftpack.rfft`;
+    the rest of the arguments are documented
     in the :ref:`additional argument docs<interfaces_additional_args>`.
     '''
     if not numpy.isrealobj(x):
@@ -261,9 +277,9 @@ def irfft(x, n=None, axis=-1, overwrite_x=False,
         planner_effort='FFTW_MEASURE', threads=1,
         auto_align_input=True, auto_contiguous=True):
     '''Perform a 1D real inverse FFT.
-    
-    The first three arguments are as per :func:`scipy.fftpack.irfft`; 
-    the rest of the arguments are documented 
+
+    The first three arguments are as per :func:`scipy.fftpack.irfft`;
+    the rest of the arguments are documented
     in the :ref:`additional argument docs<interfaces_additional_args>`.
     '''
     if not numpy.isrealobj(x):
@@ -277,7 +293,7 @@ def irfft(x, n=None, axis=-1, overwrite_x=False,
 
     complex_input = _irfft_input_to_complex(x, axis)
 
-    return numpy_fft.irfft(complex_input, n, axis, overwrite_x, 
+    return numpy_fft.irfft(complex_input, n, axis, overwrite_x,
             planner_effort, threads, auto_align_input, auto_contiguous)
 
 

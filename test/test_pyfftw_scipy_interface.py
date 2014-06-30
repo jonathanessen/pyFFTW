@@ -1,5 +1,4 @@
-# Copyright 2013 Knowledge Economy Developments Ltd
-# Copyright 2014 David Wells
+# Copyright 2014 Knowledge Economy Developments Ltd
 #
 # Henry Gomersall
 # heng@kedevelopments.co.uk
@@ -7,18 +6,34 @@
 # David Wells
 # drwells <at> vt.edu
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# All rights reserved.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# * Neither the name of the copyright holder nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
 
 from pyfftw.interfaces import scipy_fftpack
 import pyfftw
@@ -37,7 +52,7 @@ implements the dct and dst functions.
 All the tests here just check that the call is made correctly.
 '''
 
-funcs = ('fft','ifft', 'fft2', 'ifft2', 'fftn', 'ifftn', 
+funcs = ('fft','ifft', 'fft2', 'ifft2', 'fftn', 'ifftn',
            'rfft', 'irfft')
 
 acquired_names = ('diff', 'tilbert', 'itilbert', 'hilbert',
@@ -60,10 +75,10 @@ make_complex_data = test_pyfftw_numpy_interface.make_complex_data
 complex_dtypes = test_pyfftw_numpy_interface.complex_dtypes
 real_dtypes = test_pyfftw_numpy_interface.real_dtypes
 
-def numpy_fft_replacement(a, s, axes, overwrite_input, planner_effort, 
+def numpy_fft_replacement(a, s, axes, overwrite_input, planner_effort,
         threads, auto_align_input, auto_contiguous):
 
-    return (a, s, axes, overwrite_input, planner_effort, 
+    return (a, s, axes, overwrite_input, planner_effort,
         threads, auto_align_input, auto_contiguous)
 
 io_dtypes = {
@@ -82,9 +97,9 @@ class InterfacesScipyFFTPackTestSimple(unittest.TestCase):
         a = pyfftw.n_byte_align_empty((128, 64), 16, dtype='complex128')
         b = pyfftw.n_byte_align_empty((128, 64), 16, dtype='complex128')
 
-        a[:] = (numpy.random.randn(*a.shape) + 
+        a[:] = (numpy.random.randn(*a.shape) +
                 1j*numpy.random.randn(*a.shape))
-        b[:] = (numpy.random.randn(*b.shape) + 
+        b[:] = (numpy.random.randn(*b.shape) +
                 1j*numpy.random.randn(*b.shape))
 
 
@@ -113,7 +128,7 @@ class InterfacesScipyFFTPackTestSimple(unittest.TestCase):
             args = tuple(args)
 
             try:
-                setattr(scipy_fftpack, each_func, 
+                setattr(scipy_fftpack, each_func,
                         numpy_fft_replacement)
 
                 return_args = getattr(scipy_fftpack, each_func)(*args)
@@ -125,11 +140,11 @@ class InterfacesScipyFFTPackTestSimple(unittest.TestCase):
                 raise
 
             finally:
-                setattr(scipy_fftpack, each_func, 
+                setattr(scipy_fftpack, each_func,
                         func_being_replaced)
 
     def test_acquired_names(self):
-        for each_name in acquired_names: 
+        for each_name in acquired_names:
 
             fftpack_attr = getattr(scipy.fftpack, each_name)
             acquired_attr = getattr(scipy_fftpack, each_name)
@@ -188,7 +203,7 @@ for each_func in funcs:
     parent_class_name = 'InterfacesNumpyFFTTest' + each_func.upper()
     parent_class = getattr(test_pyfftw_numpy_interface, parent_class_name)
 
-    class_dict = {'validator_module': scipy.fftpack, 
+    class_dict = {'validator_module': scipy.fftpack,
                 'test_interface': scipy_fftpack,
                 'io_dtypes': io_dtypes,
                 'overwrite_input_flag': 'overwrite_x',

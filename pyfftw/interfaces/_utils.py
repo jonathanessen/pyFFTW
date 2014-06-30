@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2012 Knowledge Economy Developments Ltd
+# Copyright 2014 Knowledge Economy Developments Ltd
 # Copyright 2014 David Wells
 #
 # Henry Gomersall
@@ -9,18 +9,34 @@
 # David Wells
 # drwells <at> vt.edu
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# All rights reserved.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# * Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# * Neither the name of the copyright holder nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
 
 '''
 Utility functions for the interfaces routines
@@ -32,7 +48,7 @@ import numpy
 from . import cache
 
 def _Xfftn(a, s, axes, overwrite_input, planner_effort,
-        threads, auto_align_input, auto_contiguous, 
+        threads, auto_align_input, auto_contiguous,
            calling_func, normalise_idft=True, real_direction_flag=None):
 
     reload_after_transform = False
@@ -57,20 +73,20 @@ def _Xfftn(a, s, axes, overwrite_input, planner_effort,
                 real_direction_flag)
     elif calling_func in ('irfft2', 'irfftn'):
         # overwrite_input is not an argument to irfft2 or irfftn
-        args = (a, s, axes, planner_effort, threads, 
+        args = (a, s, axes, planner_effort, threads,
                 auto_align_input, auto_contiguous)
 
         if not overwrite_input:
             # Only irfft2 and irfftn have overwriting the input
-            # as the default (and so require the input array to 
+            # as the default (and so require the input array to
             # be reloaded).
             reload_after_transform = True
     else:
-        args = (a, s, axes, overwrite_input, planner_effort, threads, 
+        args = (a, s, axes, overwrite_input, planner_effort, threads,
                 auto_align_input, auto_contiguous)
-    
+
     if cache.is_enabled():
-        key = (calling_func, a.shape, a.strides, a.dtype, s.__hash__(), 
+        key = (calling_func, a.shape, a.strides, a.dtype, s.__hash__(),
                 axes.__hash__(), args[3:])
 
         try:
@@ -89,12 +105,12 @@ def _Xfftn(a, s, axes, overwrite_input, planner_effort,
         # If we're going to create a new FFTW object, we need to copy
         # the input array to preserve it, otherwise we can't actually
         # take the transform of the input array! (in general, we have
-        # to assume that the input array will be destroyed during 
+        # to assume that the input array will be destroyed during
         # planning).
         a_copy = a.copy()
 
         FFTW_object = getattr(builders, calling_func)(*args)
-    
+
         # Only copy if the input array is what was actually used
         # (otherwise it shouldn't be overwritten)
         if FFTW_object.input_array is a:
@@ -102,7 +118,7 @@ def _Xfftn(a, s, axes, overwrite_input, planner_effort,
 
         if cache.is_enabled():
             cache._fftw_cache.insert(FFTW_object, key)
-        
+
         output_array = FFTW_object(normalise_idft=normalise_idft)
 
     else:
@@ -114,12 +130,12 @@ def _Xfftn(a, s, axes, overwrite_input, planner_effort,
         output_dtype = orig_output_array.dtype
         output_alignment = FFTW_object.output_alignment
 
-        output_array = pyfftw.n_byte_align_empty(output_shape, 
+        output_array = pyfftw.n_byte_align_empty(output_shape,
                 output_alignment, output_dtype)
 
-        FFTW_object(input_array=a, output_array=output_array, 
+        FFTW_object(input_array=a, output_array=output_array,
                 normalise_idft=normalise_idft)
-    
+
     if reload_after_transform:
         a[:] = a_copy
 
