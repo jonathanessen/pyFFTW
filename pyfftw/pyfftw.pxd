@@ -35,10 +35,6 @@
 cimport numpy as np
 from libc.stdint cimport int64_t
 
-cimport pyfftw
-cdef class FFTW:
-    cdef fftw_generic_execute _fftw_execute
-
 ctypedef struct _fftw_iodim:
     int _n
     int _is
@@ -321,3 +317,6 @@ cdef enum:
     FFTW_PATIENT = 32
     FFTW_ESTIMATE = 64
     FFTW_WISDOM_ONLY = 2097152
+
+cdef class FFTW:
+    cdef fftw_generic_execute _fftw_execute
