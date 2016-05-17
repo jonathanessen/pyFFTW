@@ -360,3 +360,11 @@ cdef class FFTW:
     cdef int64_t *_not_axes
 
     cdef int64_t _N
+
+    cpdef update_arrays(self,
+            new_input_array, new_output_array)
+
+    cdef _update_arrays(self,
+            np.ndarray new_input_array, np.ndarray new_output_array):
+
+    cpdef execute(self)
