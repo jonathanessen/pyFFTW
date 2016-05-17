@@ -356,44 +356,11 @@ cdef class FFTW:
     cdef int64_t *_not_axes
 
     cdef int64_t _N
-    def _get_N(self)
-    def _get_simd_aligned(self)
-    def _get_input_alignment(self)
-    def _get_output_alignment(self)
-    def _get_flags_used(self)
-    def _get_input_array(self)
-    def _get_output_array(self)
-    def _get_input_strides(self)
-    def _get_output_strides(self)
-    def _get_input_shape(self)
-    def _get_output_shape(self)
-    def _get_input_dtype(self)
-    def _get_output_dtype(self)
-    def _get_direction(self)
-    def _get_axes(self)
-
-    def __cinit__(self, input_array, output_array, axes=(-1,),
-                  direction='FFTW_FORWARD', flags=('FFTW_MEASURE',),
-                  unsigned int threads=1, planning_timelimit=None,
-                  *args, **kwargs)
-
-    def __init__(self, input_array, output_array, axes=(-1,),
-            direction='FFTW_FORWARD', flags=('FFTW_MEASURE',),
-            int threads=1, planning_timelimit=None)
-
-    def __dealloc__(self)
-
-    def __call__(self, input_array=None, output_array=None,
-            normalise_idft=True)
 
     cpdef update_arrays(self,
             new_input_array, new_output_array)
 
     cdef _update_arrays(self,
             np.ndarray new_input_array, np.ndarray new_output_array)
-
-    def get_input_array(self)
-
-    def get_output_array(self)
 
     cpdef execute(self)
