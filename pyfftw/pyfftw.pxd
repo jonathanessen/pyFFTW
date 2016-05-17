@@ -319,11 +319,15 @@ cdef enum:
     FFTW_WISDOM_ONLY = 2097152
 
 cdef class FFTW:
+    # Each of these function pointers simply
+    # points to a chosen fftw wrapper function
     cdef fftw_generic_plan_guru _fftw_planner
     cdef fftw_generic_execute _fftw_execute
     cdef fftw_generic_destroy_plan _fftw_destroy
     cdef fftw_generic_plan_with_nthreads _nthreads_plan_setter
 
+    # The plan is typecast when it is created or used
+    # within the wrapper functions
     cdef void *_plan
 
     cdef np.ndarray _input_array
@@ -356,11 +360,3 @@ cdef class FFTW:
     cdef int64_t *_not_axes
 
     cdef int64_t _N
-
-    cpdef update_arrays(self,
-            new_input_array, new_output_array)
-
-    cdef _update_arrays(self,
-            np.ndarray new_input_array, np.ndarray new_output_array)
-
-    cpdef execute(self)
