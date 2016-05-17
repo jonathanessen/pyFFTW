@@ -37,7 +37,7 @@ from libc.stdint cimport int64_t
 
 cimport pyfftw
 cdef class FFTW:
-    cdef pyfftw.fftw_generic_execute _fftw_execute
+    cdef fftw_generic_execute _fftw_execute
 
 ctypedef struct _fftw_iodim:
     int _n
