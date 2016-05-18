@@ -1203,6 +1203,7 @@ cdef class FFTW:
             plan = fftw_planner(rank, dims, howmany_rank, howmany_dims,
                                 _in, _out, self._direction, c_flags)
         self._plan = plan
+        self.__plan = <char *> plan
 
         if self._plan == NULL:
             if 'FFTW_WISDOM_ONLY' in flags:

@@ -328,7 +328,9 @@ cdef class FFTW:
 
     # The plan is typecast when it is created or used
     # within the wrapper functions
-    cdef public void *_plan
+    cdef void *_plan
+    cdef public char *__plan
+
 
     cdef public np.ndarray _input_array
     cdef public np.ndarray _output_array
