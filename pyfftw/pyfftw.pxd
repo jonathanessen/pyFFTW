@@ -330,7 +330,7 @@ cdef class FFTW:
     cdef fftw_generic_destroy_plan _fftw_destroy
     cdef fftw_generic_plan_with_nthreads _nthreads_plan_setter
 
-    cdef plan_struct _plan_struct
+    cdef public plan_struct _plan_struct
 
     # The plan is typecast when it is created or used
     # within the wrapper functions
