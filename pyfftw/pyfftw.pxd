@@ -33,7 +33,7 @@
 #
 
 cimport numpy as np
-cimport cpython.pycapsule
+from cpython.pycapsule import *
 from libc.stdint cimport int64_t
 
 ctypedef struct _fftw_iodim:
@@ -319,10 +319,6 @@ cdef enum:
     FFTW_ESTIMATE = 64
     FFTW_WISDOM_ONLY = 2097152
 
-# wut?
-cdef struct pycapsule:
-    pass
-
 cdef class FFTW:
     # Each of these function pointers simply
     # points to a chosen fftw wrapper function
@@ -331,7 +327,7 @@ cdef class FFTW:
     cdef fftw_generic_destroy_plan _fftw_destroy
     cdef fftw_generic_plan_with_nthreads _nthreads_plan_setter
 
-    cdef pycapsule _plan_capsule
+    cdef PyCapsule_Type _plan_capsule
 
     # The plan is typecast when it is created or used
     # within the wrapper functions
