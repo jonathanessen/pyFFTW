@@ -318,6 +318,12 @@ cdef enum:
     FFTW_ESTIMATE = 64
     FFTW_WISDOM_ONLY = 2097152
 
+# Need this to expose void pointer to python
+ctypedef struct FFTW_public:
+    void *_plan
+    np.ndarray _in
+    np.ndarray _out
+
 cdef class FFTW:
     # Each of these function pointers simply
     # points to a chosen fftw wrapper function
@@ -326,14 +332,14 @@ cdef class FFTW:
     cdef fftw_generic_destroy_plan _fftw_destroy
     cdef fftw_generic_plan_with_nthreads _nthreads_plan_setter
 
+    cdef FFTW_public _info
+
     # The plan is typecast when it is created or used
     # within the wrapper functions
     cdef void *_plan
-    cdef public char *__plan
 
-
-    cdef public np.ndarray _input_array
-    cdef public np.ndarray _output_array
+    cdef np.ndarray _input_array
+    cdef np.ndarray _output_array
     cdef int *_direction
     cdef unsigned _flags
 
