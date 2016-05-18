@@ -328,10 +328,10 @@ cdef class FFTW:
 
     # The plan is typecast when it is created or used
     # within the wrapper functions
-    cdef void *_plan
+    cdef public void *_plan
 
-    cdef np.ndarray _input_array
-    cdef np.ndarray _output_array
+    cdef public np.ndarray _input_array
+    cdef public np.ndarray _output_array
     cdef int *_direction
     cdef unsigned _flags
 
