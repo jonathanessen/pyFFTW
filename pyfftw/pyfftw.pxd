@@ -327,7 +327,7 @@ cdef class FFTW:
     cdef fftw_generic_destroy_plan _fftw_destroy
     cdef fftw_generic_plan_with_nthreads _nthreads_plan_setter
 
-    cdef PyObject *_plan_capsule
+    cdef PyObject _plan_capsule
 
     # The plan is typecast when it is created or used
     # within the wrapper functions
