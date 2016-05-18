@@ -33,7 +33,7 @@
 #
 
 cimport numpy as np
-from cpython.ref cimport PyObject
+from cpython.pycapsule cimport PyCapsule
 from libc.stdint cimport int64_t
 
 ctypedef struct _fftw_iodim:
@@ -328,7 +328,7 @@ cdef class FFTW:
     cdef fftw_generic_destroy_plan _fftw_destroy
     cdef fftw_generic_plan_with_nthreads _nthreads_plan_setter
 
-    #cdef PyObject *_plan_capsule
+    cdef PyCapsule _plan_capsule
 
     # The plan is typecast when it is created or used
     # within the wrapper functions
