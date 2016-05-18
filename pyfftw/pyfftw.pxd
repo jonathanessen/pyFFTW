@@ -319,10 +319,8 @@ cdef enum:
     FFTW_WISDOM_ONLY = 2097152
 
 # Need this to expose void pointer to python
-ctypedef struct FFTW_public:
+ctypedef struct plan_struct:
     void *_plan
-    np.ndarray _in
-    np.ndarray _out
 
 cdef class FFTW:
     # Each of these function pointers simply
