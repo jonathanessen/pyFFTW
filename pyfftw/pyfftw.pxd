@@ -33,7 +33,6 @@
 #
 
 cimport numpy as np
-from cpython.ref cimport PyObject
 from libc.stdint cimport int64_t
 
 ctypedef struct _fftw_iodim:

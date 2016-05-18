@@ -1214,9 +1214,6 @@ cdef class FFTW:
                 raise RuntimeError('The data has an uncaught error that led '+
                     'to the planner returning NULL. This is a bug.')
 
-        # void pointers are not accessible from python, so we use pycapsule
-        self._plan_capsule = PyCapsule_New(self._plan, NULL, NULL)
-
     def __init__(self, input_array, output_array, axes=(-1,),
             direction='FFTW_FORWARD', flags=('FFTW_MEASURE',),
             int threads=1, planning_timelimit=None):
@@ -1481,7 +1478,8 @@ cdef class FFTW:
         transform (which :class:`pyfftw.FFTW` will handle for you when
         accessed through :meth:`~pyfftw.FFTW.__call__`).
         '''
-        pass
+        # void pointers are not accessible from python, so we use pycapsule
+        self._plan_capsule = PyCapsule_New(self._plan, NULL, NULL)
 
     def __dealloc__(self):
 
