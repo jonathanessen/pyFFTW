@@ -1479,7 +1479,8 @@ cdef class FFTW:
         accessed through :meth:`~pyfftw.FFTW.__call__`).
         '''
         # void pointers are not accessible from python, so we use pycapsule
-        self._plan_capsule = PyCapsule_New(self._plan, NULL, NULL)
+        #self._plan_capsule = PyCapsule_New(self._plan, NULL, NULL)
+        pass
 
     def __dealloc__(self):
 
