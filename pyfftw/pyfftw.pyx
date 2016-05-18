@@ -39,6 +39,8 @@ from libc.stdlib cimport calloc, malloc, free
 from libc.stdint cimport intptr_t, int64_t
 from libc cimport limits
 
+from cpython.pycapsule cimport PyCapsule_New
+
 import warnings
 import threading
 
@@ -884,8 +886,6 @@ cdef class FFTW:
         else:
             given_directions = list(direction)
 
-        self._plan_struct._plan = self._plan
-
         # Initialise the pointers that need to be freed
         self._plan = NULL
         self._dims = NULL
@@ -1212,6 +1212,9 @@ cdef class FFTW:
             else:
                 raise RuntimeError('The data has an uncaught error that led '+
                     'to the planner returning NULL. This is a bug.')
+
+        # void pointers are not accessible from python, so we use pycapsule
+        self._plan_capsule = PyCapsule_New(self._plan, NULL, NULL)
 
     def __init__(self, input_array, output_array, axes=(-1,),
             direction='FFTW_FORWARD', flags=('FFTW_MEASURE',),

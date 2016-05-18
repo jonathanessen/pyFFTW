@@ -33,6 +33,7 @@
 #
 
 cimport numpy as np
+from cpython.ref cimport PyObject
 from libc.stdint cimport int64_t
 
 ctypedef struct _fftw_iodim:
@@ -318,9 +319,6 @@ cdef enum:
     FFTW_ESTIMATE = 64
     FFTW_WISDOM_ONLY = 2097152
 
-# Need this to expose void pointer to python
-ctypedef struct plan_struct:
-    void *_plan
 
 cdef class FFTW:
     # Each of these function pointers simply
@@ -330,7 +328,7 @@ cdef class FFTW:
     cdef fftw_generic_destroy_plan _fftw_destroy
     cdef fftw_generic_plan_with_nthreads _nthreads_plan_setter
 
-    cdef public plan_struct _plan_struct
+    cdef PyObject *_plan_capsule
 
     # The plan is typecast when it is created or used
     # within the wrapper functions
