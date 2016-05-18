@@ -39,6 +39,7 @@ from libc.stdlib cimport calloc, malloc, free
 from libc.stdint cimport intptr_t, int64_t
 from libc cimport limits
 
+from cpython.ref cimport PyObject
 from cpython.pycapsule cimport PyCapsule_New
 
 import warnings
@@ -1214,7 +1215,7 @@ cdef class FFTW:
                     'to the planner returning NULL. This is a bug.')
 
         # void pointers are not accessible from python, so we use pycapsule
-        self._plan_capsule = PyCapsule_New(self._plan, NULL, NULL)
+        self._plan_capsule = <PyObject>PyCapsule_New(self._plan, NULL, NULL)
 
     def __init__(self, input_array, output_array, axes=(-1,),
             direction='FFTW_FORWARD', flags=('FFTW_MEASURE',),
