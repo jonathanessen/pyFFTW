@@ -884,7 +884,7 @@ cdef class FFTW:
         else:
             given_directions = list(direction)
 
-        self._info._plan = self._plan
+        self._plan_struct._plan = self._plan
 
         # Initialise the pointers that need to be freed
         self._plan = NULL
