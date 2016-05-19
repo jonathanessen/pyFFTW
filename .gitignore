@@ -3,6 +3,7 @@
 *.c
 *.swp
 *.*~
+*.ipynb*
 build
 dist
 docs
