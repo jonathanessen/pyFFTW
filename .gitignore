@@ -4,6 +4,8 @@
 *.swp
 *.*~
 *.ipynb*
+*.pkl
+*.DS_Store
 build
 dist
 docs
